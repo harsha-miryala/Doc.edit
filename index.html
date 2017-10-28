@@ -3,7 +3,7 @@
 <script>
     
     var socket = io.connect('http://localhost:8080');
-    var users = ['SERVER']; 
+    var users = ['SERVER','You']; 
     var x = prompt("What's your name?","");
     var y = prompt("What is your group-id?","");
 
@@ -19,13 +19,27 @@
         }
     });
 
+    //list of members when the client joins the room 
+    socket.on('present_users',function(userlist){
+        for(var i=0,size=userlist.length;i<size ;i++)
+        {
+            if(userlist[i]==x)
+            {
+                $('#rooms').append('<div>' + '<strong>' + 'You' + '</strong>:' + '</div>');
+            }    
+            else
+            {
+                users.push(userlist[i]);
+                $('#rooms').append('<div>' + '<strong>' + userlist[i] + '</strong>:' + '</div>');
+            }
+        }
+    });
+
     // listener, whenever the server emits 'updatechat', this updates the chat body
     socket.on('updatechat', function (username, data) {
-        if(users.indexOf(username)<=-1)
-        {
-            users.push(username);
-            $('#rooms').append('<div>' + '<strong>' + username + '</strong>:' + '</div>');
-        }
+        if(username==x)
+        $('#conversation').append('<b>'+ 'You' + ':</b> ' + data + '<br>');
+        else
         $('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
     });
     
@@ -43,8 +57,11 @@
 
     // listener, whenever a new user enters in your group , the user is added to the list 
     socket.on('newuser', function(username){
-            users.push(username);
-            $('#rooms').append('<div>' + '<strong>' + username + '</strong>:' + '</div>');
+            if(username!==x)
+            {
+                users.push(username);
+                $('#rooms').append('<div>' + '<strong>' + username + '</strong>:' + '</div>');
+            }
     });
 
     // listener, whenever a user leaves the group , the list has to be updated 
@@ -53,15 +70,27 @@
         removeA(users,username);
         for(var i=0,size=users.length; i<size ;i++)
         {       
+            if(users[i]!=x && users[i]!='SERVER')
             $('#rooms').append('<div>' + '<strong>' + users[i] + '</strong>:' + '</div>');
         }
     });
 
+    //for the updation of the textbox
     socket.on('updated_para',function(data){
        // $('#editor').empty();
         $('#editor').val(data);
         console.log("updated_para" + data);
     });
+
+    /*
+    socket.on('update_typestatus',function(data){
+        document.getElementByID('status1').innerHTML = data ;
+    });
+
+    socket.on('update_editstatus',function(data){
+        document.getElementByID('status2').innerHTML = data ;
+    });
+    */
 
     // on load of page
     $(function(){
@@ -75,6 +104,7 @@
 
         // when the client hits ENTER on their keyboard
         $('#data').keypress(function(e) {
+            //socket.emit('texting',x);
             if(e.which == 13) {
                 $(this).blur();
                 $('#datasend').focus().click();
@@ -84,32 +114,12 @@
         // when the client types something in the textbox
         $('#editor').bind('input propertychange', function() {
             var para = $('#editor').val();
-            document.getElementById('status').innerHTML='typing';
-            //socket.emit('updated_para',para);
+            //socket.emit('editing',x);
             socket.emit('para', para);
         });
     });
 
-    /*
-    document.addEventListener('keypress',function() {
-        var para= $('#editor').val();
-        document.getElementById('status').innerHTML='typing';
-        socket.emit('updated_para',para);
-        socket.emit('para', para);
-    });*/
-
 </script>
-<style>
-        textarea#reply
-        {
-                width: 300px;
-                height: 300px;                
-                padding: 5px;
-                font-family: Tahoma, sans-serif;
-                background-position: top right;
-                background-repeat: no-repeat;
-        }
-</style> 
 <div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
     <b>Room-Members</b>
     <div id="rooms"></div>
@@ -120,4 +130,3 @@
     <input type="button" id="datasend" value="send" />
 </div>
 <textarea id="editor" style="float:right;height:200px;width:300px"></textarea>
-<p id="status">Nothing</p>
