@@ -12,6 +12,19 @@ var usernames = {};
 var prev_data = {};
 var rooms = [];
 var grpcount = {} ;
+var userlist = {} ;
+
+//for removing a value in the list
+function removeA(arr) {
+            var what, a = arguments, L = a.length, ax;
+            while (L > 1 && arr.length) {
+                what = a[--L];
+                while ((ax= arr.indexOf(what)) !== -1) {
+                        arr.splice(ax, 1);
+                }
+            }
+            return arr;
+}
 
 io.sockets.on('connection', function(socket){
 
@@ -33,6 +46,8 @@ io.sockets.on('connection', function(socket){
         {
            grpcount[group]+=1;
         }
+        if(!userlist[group]) userlist[group]=[username];
+        else userlist[group].push(username);    
         // add the client's username to the global list
         usernames[username] = username;
         // send client to room 1
@@ -41,6 +56,7 @@ io.sockets.on('connection', function(socket){
         socket.emit('updatechat', 'SERVER', 'you have connected to : '+ group);
         // tell your room-mates that a person has connected to their room
         socket.broadcast.to(group).emit('newuser', username);
+        socket.emit('present_users',userlist[group]);
         if(group in prev_data)
         {
             socket.emit('updated_para',prev_data[group]);
@@ -53,6 +69,7 @@ io.sockets.on('connection', function(socket){
         io.sockets.in(socket.room).emit('updatechat', socket.username, data);
     });
 
+    //new para needs to sent to room members
     socket.on('para',function(data){
         prev_data[socket.room] = data;
         //console.log(socket.room);  
@@ -60,12 +77,23 @@ io.sockets.on('connection', function(socket){
         io.sockets.in(socket.room).emit('updated_para',data);
     });
 
+    /*
+    socket.on('editing',function(user){
+        io.sockets.in(socket.room).emit('update_editstatus',user);
+    });
+
+    socket.on('texting',function(user){
+        io.sockets.in(socket.room).emit('update_typestatus',user);
+    });
+    */    
+
     // when the user disconnects.. perform this
     socket.on('disconnect', function(){
         // remove the username from global usernames list
         delete usernames[socket.username];
+
         // update list of users in chat, client-side
-        io.sockets.emit('updateusers', usernames);
+        io.sockets.emit('updateusers', socket.username);
         // echo globally that this client has left
         socket.broadcast.to(socket.room).emit('updateusers', socket.username);
         grpcount[socket.room]-=1;               
