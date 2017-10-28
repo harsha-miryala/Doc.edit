@@ -1,0 +1,11 @@
+{
+  "name": "collab-edit",
+  "main": "server.js",
+  "dependencies": {
+    "express": "",
+    "socket.io": ""
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
