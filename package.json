@@ -1,11 +1,34 @@
 {
-  "name": "collab-edit",
+  "name": "Collaborative-Editor",
+  "version": "1.0.0",
+  "description": "Web based real time collaborative text editor with chatbox",
   "main": "server.js",
   "dependencies": {
     "express": "",
     "socket.io": ""
   },
+  "devDependencies": {},
   "scripts": {
     "start": "node app.js"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/harsha1601/Collaborative-Editor.git"
+  },
+  "keywords": [
+    "real",
+    "time",
+    "collaborative",
+    "text",
+    "editor",
+    "chat-box",
+    "Socket.io",
+    "express"
+  ],
+  "author": "Miryala Harsha Vardhan <miryalaharshavardhan4@gmail.com>",
+  "license": "Open Source - Feel free to pull request for addition of features",
+  "bugs": {
+    "url": "https://github.com/harsha1601/Collaborative-Editor/issues"
+  },
+  "homepage": "https://github.com/harsha1601/Collaborative-Editor"
 }
