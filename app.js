@@ -54,18 +54,20 @@ io.sockets.on('connection', function(socket){
         // send client to room 1
         socket.join(group);
         // echo to client they've connected
+        console.log('['+new Date().toLocaleString()+']: ['+username+'] has joined ['+group+']');
         socket.emit('updatechat', 'SERVER', 'you have connected to : '+ group);
         // tell your room-mates that a person has connected to their room
         socket.broadcast.to(group).emit('newuser', username);
         socket.emit('present_users',userlist[group]);
         if(group in prev_data)
         {
-            socket.emit('updated_para',prev_data[group]);
+            socket.emit('updated_para',socket.username,prev_data[group]);
         }
     });
 
     // when the client emits 'sendchat', this listens and executes
     socket.on('sendchat', function (data) {
+        console.log('['+new Date().toLocaleString()+']: ['+socket.username+'] in ['+socket.room+'] sent a message ['+data+']');
         // we tell the client to execute 'updatechat' with 2 parameters
         io.sockets.in(socket.room).emit('updatechat', socket.username, data);
     });
@@ -73,9 +75,8 @@ io.sockets.on('connection', function(socket){
     //new para needs to sent to room members
     socket.on('para',function(data){
         prev_data[socket.room] = data;
-        //console.log(socket.room);  
-        //console.log(data);  
-        io.sockets.in(socket.room).emit('updated_para',data);
+        console.log('['+new Date().toLocaleString()+']: ['+socket.username+'] in ['+socket.room+'] has updated the doc');  
+        io.sockets.in(socket.room).emit('updated_para',socket.username, data);
     }); 
 
     // when the user disconnects.. perform this
