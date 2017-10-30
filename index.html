@@ -42,16 +42,16 @@
         for(var i=0,size=userlist.length;i<size ;i++)
         {
             users.push(userlist[i]);
-            $('#rooms').append('<div class  ="members">' + '<strong>' + userlist[i] + '</strong>' + '</div>');
+            $('#rooms').append('<span class=members>'+userlist[i].big().bold()+'</span>');
         }
     });
 
     // listener, whenever the server emits 'updatechat', this updates the chat body
     socket.on('updatechat', function (username, data) {
         if(username==x)
-        $('#conversation').append('<div class = "members">' +'<b>'+ 'You' + ':</b> ' + data + '<br>' + '</div>');
+        $('#conversation').append('<span class = "members">' +'<b>'+ 'You'.big() + ':</b> ' + data.big() + '<br>' + '</span>');
         else
-        $('#conversation').append('<div class = "members">' + '<b>'+username + ':</b> ' + data + '<br>' + '</div>');
+        $('#conversation').append('<span class = "members">' + '<b>'+username.big() + ':</b> ' + data.big() + '<br>' + '</span>');
     });
     
     //for removing a value in the list
@@ -69,7 +69,7 @@
     // listener, whenever a new user enters in your group , the user is added to the list 
     socket.on('newuser', function(username){
                 users.push(username);
-                $('#rooms').append('<div class = "members">' + '<strong>' + username + '</strong>' + '</div>');
+                $('#rooms').append('<span class=members>'+username.big().bold()+'</span>');
     });
 
     // listener, whenever a user leaves the group , the list has to be updated 
@@ -79,13 +79,13 @@
         for(var i=0,size=users.length; i<size ;i++)
         {       
             if(users[i]!='SERVER')
-            $('#rooms').append('<div class = "members">' + '<strong>' + users[i] + '</strong>' + '</div>');
+            $('#rooms').append('<span class=members>'+username.big().bold()+'</span>');
         }
     });
 
     //for the updation of the textbox
     socket.on('updated_para',function(username,data){
-        $('#status').text('['+username+']'+ ' is currently editing');
+        $('#status').text('['+username+']'+ ' is currently editing.....');
         $('#editor').val(data);
         console.log("updated_para" + data);
     });
@@ -148,9 +148,9 @@ h2{
 
 #room{
     float:left;
-    width:300px;
+    width:250px;
     height:300px;
-    padding:10px;
+    padding:1px;
     overflow:scroll-y
 }
 
@@ -191,7 +191,7 @@ div.numberedtextarea-line-numbers {
   left: 0;
   right: 0;
   bottom: 0;
-  width: 50px;
+  width: 35px;
   border-right: 1px solid rgba(0, 0, 0, 0.5);
   color: rgba(0, 0,0, 0.5);
   overflow: hidden;
@@ -211,14 +211,14 @@ div.numberedtextarea-number {
         <div id = "chat" >
             <h2 class = "centre">Chat</h2>
             <div id="conversation"></div>
-            <input id="data" style="width:200px;" class = "chat-left"/>
+            <input id="data" style="width:350px;" class = "chat-left"/>
             <br>
             <input type="button" id="datasend" style = "font-size: 10pt;" value="send" />
             <p id="status" style="color: #fff;font-weight:500;font-family: Nunito;"></p>
         </div>
         <div class="container" style="max-width: 640px; margin:2px auto;">
             <h2>Document</h2>
-            <textarea cols="60" rows="38" class="form-control"  id="editor" spellcheck="true"></textarea>
+            <textarea cols="65" rows="37" class="form-control"  id="editor" spellcheck="true"></textarea>
             <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
             <script> 
 (function ($) {
