@@ -1,4 +1,22 @@
-<script src="/socket.io/socket.io.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Doc.Edit</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Oswald|Poiret+One|Indie+Flower|Lobster|Shadows+Into+Light|Pacifico|Dancing+Script|Bangers' rel='stylesheet' type='text/css'>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+      <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    </head>
+
+
+    <body>
+        <script src="/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script>
     
@@ -23,24 +41,17 @@
     socket.on('present_users',function(userlist){
         for(var i=0,size=userlist.length;i<size ;i++)
         {
-            if(userlist[i]==x)
-            {
-                $('#rooms').append('<div>' + '<strong>' + 'You' + '</strong>:' + '</div>');
-            }    
-            else
-            {
-                users.push(userlist[i]);
-                $('#rooms').append('<div>' + '<strong>' + userlist[i] + '</strong>:' + '</div>');
-            }
+            users.push(userlist[i]);
+            $('#rooms').append('<div class  ="members">' + '<strong>' + userlist[i] + '</strong>' + '</div>');
         }
     });
 
     // listener, whenever the server emits 'updatechat', this updates the chat body
     socket.on('updatechat', function (username, data) {
         if(username==x)
-        $('#conversation').append('<b>'+ 'You' + ':</b> ' + data + '<br>');
+        $('#conversation').append('<div class = "members">' +'<b>'+ 'You' + ':</b> ' + data + '<br>' + '</div>');
         else
-        $('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+        $('#conversation').append('<div class = "members">' + '<b>'+username + ':</b> ' + data + '<br>' + '</div>');
     });
     
     //for removing a value in the list
@@ -57,11 +68,8 @@
 
     // listener, whenever a new user enters in your group , the user is added to the list 
     socket.on('newuser', function(username){
-            if(username!==x)
-            {
                 users.push(username);
-                $('#rooms').append('<div>' + '<strong>' + username + '</strong>:' + '</div>');
-            }
+                $('#rooms').append('<div class = "members">' + '<strong>' + username + '</strong>' + '</div>');
     });
 
     // listener, whenever a user leaves the group , the list has to be updated 
@@ -70,8 +78,8 @@
         removeA(users,username);
         for(var i=0,size=users.length; i<size ;i++)
         {       
-            if(users[i]!=x && users[i]!='SERVER')
-            $('#rooms').append('<div>' + '<strong>' + users[i] + '</strong>:' + '</div>');
+            if(users[i]!='SERVER')
+            $('#rooms').append('<div class = "members">' + '<strong>' + users[i] + '</strong>' + '</div>');
         }
     });
 
@@ -120,13 +128,238 @@
     });
 
 </script>
-<div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
-    <b>Room-Members</b>
-    <div id="rooms"></div>
-</div>
-<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
-    <div id="conversation"></div>
-    <input id="data" style="width:200px;" />
-    <input type="button" id="datasend" value="send" />
-</div>
-<textarea id="editor" style="float:right;height:200px;width:300px"></textarea>
+<style>
+
+body {
+    background-color: #111;
+}
+
+textarea {background:#fff ; color:#000 ; padding:5px;}
+
+h2{
+    color: #fff;
+    font-weight:500;
+    font-family: Ubuntu;
+}
+
+.centre{
+    text-align: center;
+}
+
+#room{
+    float:left;
+    width:300px;
+    height:300px;
+    padding:10px;
+    overflow:scroll-y
+}
+
+.members{
+    color: #fff;
+    font-weight:500;
+    font-family: Nunito;
+}
+
+#chat{
+    float:right;
+    padding:10px;
+
+}
+
+.chat-left{
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    font-family: oswald;
+    font-size:10pt;
+    border:groove 1px black;
+}
+
+div.numberedtextarea-wrapper { position: relative; }
+
+div.numberedtextarea-wrapper textarea {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+div.numberedtextarea-line-numbers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  border-right: 1px solid rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0,0, 0.5);
+  overflow: hidden;
+}
+
+div.numberedtextarea-number {
+  padding-right: 6px;
+  text-align: right;
+}
+
+</style>
+        <div id = "room">
+            <h2>Room-Members</h2>
+            <div id="rooms"></div>
+        </div>
+
+        <div id = "chat" >
+            <h2 class = "centre">Chat</h2>
+            <div id="conversation"></div>
+            <input id="data" style="width:200px;" class = "chat-left"/>
+            <br>
+            <input type="button" id="datasend" style = "font-size: 10pt;" value="send" />
+        </div>
+        <div class="container" style="max-width: 640px; margin:2px auto;">
+<h2>Document</h2>
+<textarea cols="60" rows="38" class="form-control"  id="editor" spellcheck="true"></textarea>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script>
+    
+(function ($) {
+ 
+    $.fn.numberedtextarea = function(options) {
+ 
+        var settings = $.extend({
+            color:          null,        // Font color
+            borderColor:    null,        // Border color
+            class:          null,        // Add class to the 'numberedtextarea-wrapper'
+            allowTabChar:   false,       // If true Tab key creates indentation
+        }, options);
+ 
+        this.each(function() {
+            if(this.nodeName.toLowerCase() !== "textarea") {
+                console.log('This is not a <textarea>, so no way Jose...');
+                return false;
+            }
+            
+            addWrapper(this, settings);
+            addLineNumbers(this, settings);
+            
+            if(settings.allowTabChar) {
+                $(this).allowTabChar();
+            }
+        });
+        
+        return this;
+    };
+    
+    $.fn.allowTabChar = function() {
+        if (this.jquery) {
+            this.each(function() {
+                if (this.nodeType == 1) {
+                    var nodeName = this.nodeName.toLowerCase();
+                    if (nodeName == "textarea" || (nodeName == "input" && this.type == "text")) {
+                        allowTabChar(this);
+                    }
+                }
+            })
+        }
+        return this;
+    }
+    
+    function addWrapper(element, settings) {
+        var wrapper = $('<div class="numberedtextarea-wrapper"></div>').insertAfter(element);
+        $(element).detach().appendTo(wrapper);
+    }
+    
+    function addLineNumbers(element, settings) {
+        element = $(element);
+        
+        var wrapper = element.parents('.numberedtextarea-wrapper');
+        
+        // Get textarea styles to implement it on line numbers div
+        var paddingLeft = parseFloat(element.css('padding-left'));
+        var paddingTop = parseFloat(element.css('padding-top'));
+        var paddingBottom = parseFloat(element.css('padding-bottom'));
+        
+        var lineNumbers = $('<div class="numberedtextarea-line-numbers"></div>').insertAfter(element);
+        
+        element.css({
+            paddingLeft: paddingLeft + lineNumbers.width() + 'px'
+        }).on('input propertychange change keyup paste', function() {
+            renderLineNumbers(element, settings);
+        }).on('scroll', function() {
+            scrollLineNumbers(element, settings);
+        }); 
+        
+        lineNumbers.css({
+            paddingLeft: paddingLeft + 'px',
+            paddingTop: paddingTop + 'px',
+            lineHeight: element.css('line-height'),
+            fontFamily: element.css('font-family'),
+            width: lineNumbers.width() - paddingLeft + 'px',
+        });
+        
+        element.trigger('change');
+    }
+    
+    function renderLineNumbers(element, settings) {
+        element = $(element);
+        
+        var linesDiv = element.parent().find('.numberedtextarea-line-numbers');
+        var count = element.val().split("\n").length;
+        var paddingBottom = parseFloat(element.css('padding-bottom'));
+        
+        linesDiv.find('.numberedtextarea-number').remove();
+        
+        for(i = 1; i<=count; i++) {
+            var line = $('<div class="numberedtextarea-number numberedtextarea-number-' + i + '">' + i + '</div>').appendTo(linesDiv);
+            
+            if(i === count) {
+                line.css('margin-bottom', paddingBottom + 'px');
+            }
+        }
+    }
+    
+    function scrollLineNumbers(element, settings) {
+        element = $(element);
+        var linesDiv = element.parent().find('.numberedtextarea-line-numbers');
+        linesDiv.scrollTop(element.scrollTop());
+    }
+    
+    function pasteIntoInput(el, text) {
+        el.focus();
+        if (typeof el.selectionStart == "number") {
+            var val = el.value;
+            var selStart = el.selectionStart;
+            el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
+            el.selectionEnd = el.selectionStart = selStart + text.length;
+        } else if (typeof document.selection != "undefined") {
+            var textRange = document.selection.createRange();
+            textRange.text = text;
+            textRange.collapse(false);
+            textRange.select();
+        }
+    }
+
+    function allowTabChar(el) {
+        $(el).keydown(function(e) {
+            if (e.which == 9) {
+                pasteIntoInput(this, "\t");
+                return false;
+            }
+        });
+
+        // For Opera, which only allows suppression of keypress events, not keydown
+        $(el).keypress(function(e) {
+            if (e.which == 9) {
+                return false;
+            }
+        });
+    }
+ 
+}(jQuery));
+</script>
+<script>
+$('textarea').numberedtextarea();
+</script>
+</div>     
+        
+    </body>
+</html>
