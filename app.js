@@ -2,7 +2,8 @@ var app = require('express')()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server);
 
-server.listen(8080);
+//app.set('port', (process.env.PORT || 8080));
+server.listen(process.env.PORT || 8080);
 
 app.get('/',function(req,res){
     res.sendFile(__dirname +"/index.html");
@@ -75,17 +76,7 @@ io.sockets.on('connection', function(socket){
         //console.log(socket.room);  
         //console.log(data);  
         io.sockets.in(socket.room).emit('updated_para',data);
-    });
-
-    /*
-    socket.on('editing',function(user){
-        io.sockets.in(socket.room).emit('update_editstatus',user);
-    });
-
-    socket.on('texting',function(user){
-        io.sockets.in(socket.room).emit('update_typestatus',user);
-    });
-    */    
+    }); 
 
     // when the user disconnects.. perform this
     socket.on('disconnect', function(){
