@@ -21,7 +21,7 @@
 <script>
     
     var socket = io.connect('http://localhost:8080');
-    var users = ['SERVER','You']; 
+    var users = ['SERVER']; 
     var x = prompt("What's your name?","");
     var y = prompt("What is your group-id?","");
 
@@ -84,8 +84,8 @@
     });
 
     //for the updation of the textbox
-    socket.on('updated_para',function(data){
-       // $('#editor').empty();
+    socket.on('updated_para',function(username,data){
+        $('#status').text('['+username+']'+ ' is currently editing');
         $('#editor').val(data);
         console.log("updated_para" + data);
     });
@@ -214,13 +214,13 @@ div.numberedtextarea-number {
             <input id="data" style="width:200px;" class = "chat-left"/>
             <br>
             <input type="button" id="datasend" style = "font-size: 10pt;" value="send" />
+            <p id="status" style="color: #fff;font-weight:500;font-family: Nunito;"></p>
         </div>
         <div class="container" style="max-width: 640px; margin:2px auto;">
-<h2>Document</h2>
-<textarea cols="60" rows="38" class="form-control"  id="editor" spellcheck="true"></textarea>
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script>
-    
+            <h2>Document</h2>
+            <textarea cols="60" rows="38" class="form-control"  id="editor" spellcheck="true"></textarea>
+            <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+            <script> 
 (function ($) {
  
     $.fn.numberedtextarea = function(options) {
@@ -356,10 +356,9 @@ div.numberedtextarea-number {
  
 }(jQuery));
 </script>
-<script>
-$('textarea').numberedtextarea();
-</script>
-</div>     
-        
-    </body>
+        <script>
+            $('textarea').numberedtextarea();
+        </script>
+    </div>         
+</body>
 </html>
