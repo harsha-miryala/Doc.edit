@@ -20,8 +20,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script>
     
-    var socket = io.connect('http://localhost:8080');
-    var users = ['SERVER']; 
+    var socket = io.connect('http://192.168.0.106:8080');
+    var users = ['SERVER','You']; 
     var x = prompt("What's your name?","");
     var y = prompt("What is your group-id?","");
 
@@ -41,8 +41,15 @@
     socket.on('present_users',function(userlist){
         for(var i=0,size=userlist.length;i<size ;i++)
         {
-            users.push(userlist[i]);
-            $('#rooms').append('<span class=members>'+userlist[i].big().bold()+'</span>');
+            if(userlist[i]==x)
+            {
+                $('#rooms').append('<span class=members>'+'You'.big().bold()+'</span>'+'<br>');
+            }    
+            else
+            {
+                users.push(userlist[i]);
+                $('#rooms').append('<span class=members>'+userlist[i].big().bold()+'</span>'+'<br>');
+            }
         }
     });
 
@@ -53,33 +60,24 @@
         else
         $('#conversation').append('<span class = "members">' + '<b>'+username.big() + ':</b> ' + data.big() + '<br>' + '</span>');
     });
-    
-    //for removing a value in the list
-    function removeA(arr) {
-            var what, a = arguments, L = a.length, ax;
-            while (L > 1 && arr.length) {
-                what = a[--L];
-                while ((ax= arr.indexOf(what)) !== -1) {
-                        arr.splice(ax, 1);
-                }
-            }
-            return arr;
-    }
 
     // listener, whenever a new user enters in your group , the user is added to the list 
     socket.on('newuser', function(username){
+        if(username!==x)
+            {
                 users.push(username);
-                $('#rooms').append('<span class=members>'+username.big().bold()+'</span>');
+                $('#rooms').append('<span class=members>'+username.big().bold()+'</span>'+'<br>');
+            }
     });
 
     // listener, whenever a user leaves the group , the list has to be updated 
     socket.on('updateusers', function(username){
         $('#rooms').empty();
-        removeA(users,username);
+        users.splice(users.indexOf(username),1);
         for(var i=0,size=users.length; i<size ;i++)
         {       
             if(users[i]!='SERVER')
-            $('#rooms').append('<span class=members>'+username.big().bold()+'</span>');
+            $('#rooms').append('<span class=members>'+users[i].big().bold()+'</span>'+'<br>');
         }
     });
 
