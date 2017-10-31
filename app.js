@@ -15,18 +15,6 @@ var rooms = [];
 var grpcount = {} ;
 var userlist = {} ;
 
-//for removing a value in the list
-function removeA(arr) {
-            var what, a = arguments, L = a.length, ax;
-            while (L > 1 && arr.length) {
-                what = a[--L];
-                while ((ax= arr.indexOf(what)) !== -1) {
-                        arr.splice(ax, 1);
-                }
-            }
-            return arr;
-}
-
 io.sockets.on('connection', function(socket){
 
     // when the client emits 'adduser', this listens and executes
@@ -83,7 +71,6 @@ io.sockets.on('connection', function(socket){
     socket.on('disconnect', function(){
         // remove the username from global usernames list
         delete usernames[socket.username];
-
         // update list of users in chat, client-side
         io.sockets.emit('updateusers', socket.username);
         // echo globally that this client has left
