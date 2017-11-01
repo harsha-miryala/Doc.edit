@@ -1,0 +1,75 @@
+<style>
+
+body {
+    background-color: #111;
+}
+
+textarea {background:#fff ; color:#000 ; padding:5px;}
+
+h2{
+    color: #fff;
+    font-weight:500;
+    font-family: Ubuntu;
+}
+
+.centre{
+    text-align: center;
+}
+
+#room{
+    float:left;
+    width:300px;
+    height:300px;
+    padding:10px;
+    overflow:scroll-y
+}
+
+.members{
+    color: #fff;
+    font-weight:500;
+    font-family: Nunito;
+}
+
+#chat{
+    float:right;
+    padding:10px;
+
+}
+
+.chat-left{
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    font-family: oswald;
+    font-size:10pt;
+    border:groove 1px black;
+}
+
+div.numberedtextarea-wrapper { position: relative; }
+
+div.numberedtextarea-wrapper textarea {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+div.numberedtextarea-line-numbers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  border-right: 1px solid rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0,0, 0.5);
+  overflow: hidden;
+}
+
+div.numberedtextarea-number {
+  padding-right: 6px;
+  text-align: right;
+}
+
+</style>
